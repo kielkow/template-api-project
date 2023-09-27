@@ -26,6 +26,8 @@ const envSchema = z.object({
 	RABBITMQ_PASSWORD: z.string().default('bitnami'),
 	RABBITMQ_URL: z.string().default('amqp://user:bitnami@rabbitmq:5672'),
 
+	MONGODB_URL: z.string().default('mongodb://mongodb:27017/templateapiproject'),
+
 	SENTRY_DSN_URL: z
 		.string()
 		.default('https://{dsn_first_id}.ingest.sentry.io/{dsn_second_id}'),
