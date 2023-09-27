@@ -59,6 +59,13 @@ class CacheProvider {
 			throw error
 		}
 	}
+
+	async disconnect() {
+		if (this.client) {
+			await this.client.disconnect()
+			this.client = null
+		}
+	}
 }
 
 export const cacheProvider = new CacheProvider()

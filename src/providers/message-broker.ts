@@ -75,6 +75,13 @@ class MessageProvider {
 			throw error
 		}
 	}
+
+	async disconnect() {
+		if (this.connection) {
+			await this.connection.close()
+			this.connection = null
+		}
+	}
 }
 
 export const messageProvider = new MessageProvider()
