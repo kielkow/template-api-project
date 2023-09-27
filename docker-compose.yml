@@ -1,0 +1,102 @@
+version: '3'
+
+services:
+  postgresql:
+    image: bitnami/postgresql
+    container_name: postgresql
+    hostname: postgresql
+    ports:
+      - 5432:5432
+    networks:
+      - app-network
+    environment:
+      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
+      - POSTGRESQL_USERNAME=${POSTGRESQL_USERNAME}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d templateapiproject -U postgresql"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  redis:
+    image: bitnami/redis
+    container_name: redis
+    hostname: redis
+    ports:
+      - 6379:6379
+    networks:
+      - app-network
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - redis-data:/var/lib/redis/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli", "ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  rabbitmq:
+    image: bitnami/rabbitmq
+    container_name: rabbitmq
+    hostname: rabbitmq
+    ports:
+      - 15672:15672
+      - 5672:5672
+    networks:
+      - app-network
+    environment:
+      - RABBITMQ_VHOST=templateapiproject
+      - RABBITMQ_USERNAME=${RABBITMQ_USERNAME}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - RABBITMQ_ERL_COOKIE=templateapiproject
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq/data
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "cluster_status"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  template-api-project:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: template-api-project
+    container_name: template-api-project
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - 3333:3333
+    networks:
+      - app-network
+    environment:
+      - PORT=${PORT}
+      - NODE_ENV=${NODE_ENV}
+      - HOST=${HOST}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - SENTRY_DSN_URL=${SENTRY_DSN_URL}
+    restart: always
+
+networks:
+  app-network:
+    name: 'app-network'
+    driver: bridge
+
+volumes:
+  postgresql-data:
+  redis-data:
+  rabbitmq-data:

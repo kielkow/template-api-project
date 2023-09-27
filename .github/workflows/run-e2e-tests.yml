@@ -1,0 +1,54 @@
+name: Run E2E Tests
+
+on: [pull_request, push]
+
+jobs:
+  run-e2e-tests:
+    name: Run E2E Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgresql:
+        image: bitnami/postgresql
+        ports:
+          - 5432:5432
+        env:
+          POSTGRESQL_DATABASE: templateapiproject
+          POSTGRESQL_USERNAME: postgresql
+          POSTGRESQL_PASSWORD: postgresql
+
+      redis:
+        image: bitnami/redis
+        ports:
+          - 6379:6379
+        env:
+          REDIS_PASSWORD: redis
+
+      rabbitmq:
+        image: bitnami/rabbitmq
+        ports:
+          - 5672:5672
+          - 15672:15672
+        env:
+          RABBITMQ_VHOST: templateapiproject
+          RABBITMQ_USERNAME: user
+          RABBITMQ_PASSWORD: bitnami
+          RABBITMQ_ERL_COOKIE: templateapiproject
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - run: npm ci
+
+      - run: npm run test:e2e
+
+        env:
+          JWT_SECRET: testing
+          DATABASE_URL: "postgresql://postgresql:postgresql@localhost:5432/templateapiproject?schema=public"
+          REDIS_URL: "redis://:redis@localhost:6379/0"
+          RABBITMQ_URL: "amqp://user:bitnami@localhost:5672/templateapiproject"
