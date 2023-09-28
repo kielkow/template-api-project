@@ -64,6 +64,30 @@ services:
       retries: 3
     restart: unless-stopped
 
+  mongodb:
+    image: bitnami/mongodb
+    container_name: mongodb
+    hostname: mongodb
+    ports:
+      - 27017:27017
+    networks:
+      - app-network
+    environment:
+      - MONGODB_ROOT_USER=${MONGODB_USERNAME}
+      - MONGODB_ROOT_PASSWORD={MONGODB_PASSWORD}
+      - MONGODB_USERNAME=${MONGODB_USERNAME}
+      - MONGODB_PASSWORD=${MONGODB_PASSWORD}
+      - MONGODB_DATABASE=${MONGODB_DATABASE}
+    volumes:
+      - mongodb-data:/var/lib/mongodb/data
+    healthcheck:
+      test: ["CMD", "echo", "db.runCommand('ping').ok' | mongosh mongodb:27017/${MONGODB_DATABASE} --quiet"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
   template-api-project:
     build:
       context: .
@@ -77,6 +101,8 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+      mongodb:
+        condition: service_healthy
     ports:
       - 3333:3333
     networks:
@@ -88,6 +114,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
       - RABBITMQ_URL=${RABBITMQ_URL}
+      - MONGODB_URL=${MONGODB_URL}
       - SENTRY_DSN_URL=${SENTRY_DSN_URL}
     restart: always
 
@@ -100,3 +127,4 @@ volumes:
   postgresql-data:
   redis-data:
   rabbitmq-data:
+  mongodb-data:
