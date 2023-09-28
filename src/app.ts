@@ -1,67 +1,67 @@
-import fastify from "fastify";
-import { ZodError } from "zod";
-import fastifyJwt from "@fastify/jwt";
-import fastifyCookie from "@fastify/cookie";
-import fastifyCors from "@fastify/cors";
-import * as Sentry from "@sentry/node";
-import { ProfilingIntegration } from "@sentry/profiling-node";
+import fastify from 'fastify'
+import { ZodError } from 'zod'
+import fastifyJwt from '@fastify/jwt'
+import fastifyCookie from '@fastify/cookie'
+import fastifyCors from '@fastify/cors'
+import * as Sentry from '@sentry/node'
+import { ProfilingIntegration } from '@sentry/profiling-node'
 
-import { env } from "./env";
+import { env } from './env'
 
-import { usersRoutes } from "./http/controllers/users/routes";
-import { healthcheckRoutes } from "./http/controllers/healthcheck/routes";
+import { usersRoutes } from './http/controllers/users/routes'
+import { healthcheckRoutes } from './http/controllers/healthcheck/routes'
 
-export const app = fastify();
+export const app = fastify()
 
 app.register(fastifyJwt, {
 	secret: env.JWT_SECRET,
 	sign: {
-		expiresIn: "1d",
+		expiresIn: '1d',
 	},
 	cookie: {
-		cookieName: "refreshToken",
+		cookieName: 'refreshToken',
 		signed: false,
 	},
-});
+})
 
-app.register(fastifyCookie);
+app.register(fastifyCookie)
 
 app.register(fastifyCors, {
 	origin: true,
 	credentials: true,
-});
+})
 
-app.register(usersRoutes);
-app.register(healthcheckRoutes);
+app.register(usersRoutes)
+app.register(healthcheckRoutes)
 
-if (env.NODE_ENV === "prod") {
+if (env.NODE_ENV === 'prod') {
 	Sentry.init({
 		dsn: env.SENTRY_DSN_URL,
 		integrations: [new ProfilingIntegration()],
 		tracesSampleRate: 1.0,
 		profilesSampleRate: 1.0,
-	});
+	})
 }
 
 app.setErrorHandler((error, _, reply) => {
 	if (error instanceof ZodError) {
 		return reply
 			.status(400)
-			.send({ message: "Validation error", issues: error.format() });
+			.send({ message: 'Validation error', issues: error.format() })
 	}
 
-	if (env.NODE_ENV !== "prod") {
-		console.error(error);
+	if (env.NODE_ENV !== 'prod') {
+		console.error(error)
 	} else {
 		const transaction = Sentry.startTransaction({
-			op: "ERROR-API",
-			name: "INTERNAL-SERVER-ERROR",
-		});
+			op: 'ERROR-API',
+			name: 'INTERNAL-SERVER-ERROR',
+		})
 
-		Sentry.captureException(error);
+		Sentry.captureException(error)
 
-		transaction.finish();
+		transaction.finish()
 	}
 
-	return reply.status(500).send({ message: "Internal server error" });
-});
+	return reply.status(500).send({ message: 'Internal server error' })
+})
