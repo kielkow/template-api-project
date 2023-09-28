@@ -1,4 +1,5 @@
 import { cacheProvider } from '@/providers/cache'
+import { mongodbProvider } from '@/providers/mongodb'
 import { messageProvider } from '@/providers/message-broker'
 import { testConn as prismaTestConn } from '@/providers/prisma'
 
@@ -13,6 +14,7 @@ export class HealthcheckUseCase {
 		await prismaTestConn()
 		await cacheProvider.testConn()
 		await messageProvider.testConn()
+		await mongodbProvider.testConn()
 
 		return { message: 'Server is up.' }
 	}
