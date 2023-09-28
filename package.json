@@ -20,7 +20,8 @@
     "start:prod": "node build/server.js",
     "start:dev": "tsx watch src/server.ts",
     "start:migrate:prod": "prisma migrate deploy && npm run start:prod",
-    "check-app": "npm run format:eslint && npm run build && npm run test:coverage"
+    "check-app": "npm run format:eslint && npm run build && npm run test:coverage",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
@@ -44,7 +45,8 @@
     "tsx": "^3.12.7",
     "typescript": "^5.1.5",
     "vite-tsconfig-paths": "4.2.0",
-    "vitest": "0.33.0"
+    "vitest": "0.33.0",
+    "husky": "^8.0.0"
   },
   "dependencies": {
     "@fastify/cookie": "9.0.4",

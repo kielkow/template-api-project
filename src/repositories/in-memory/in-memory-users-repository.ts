@@ -1,29 +1,29 @@
-import { randomUUID } from 'crypto'
-import { Prisma, Role, User } from '@prisma/client'
+import { randomUUID } from "crypto";
+import { Prisma, Role, User } from "@prisma/client";
 
-import { UserUpdate, UsersRepository } from '../users-repository'
+import { UserUpdate, UsersRepository } from "../users-repository";
 
 export class InMemoryUsersRepository implements UsersRepository {
-	public users: User[] = []
+	public users: User[] = [];
 
 	async findById(id: string) {
-		const user = this.users.find((user) => user.id === id)
+		const user = this.users.find((user) => user.id === id);
 
-		if (!user) return null
+		if (!user) return null;
 
-		return user
+		return user;
 	}
 
 	async findByEmail(email: string) {
-		const user = this.users.find((user) => user.email === email)
+		const user = this.users.find((user) => user.email === email);
 
-		if (!user) return null
+		if (!user) return null;
 
-		return user
+		return user;
 	}
 
 	async create(data: Prisma.UserCreateInput) {
-		const { name, email, password_hash } = data
+		const { name, email, password_hash } = data;
 
 		const user = {
 			id: randomUUID(),
@@ -32,22 +32,22 @@ export class InMemoryUsersRepository implements UsersRepository {
 			password_hash,
 			role: Role.MEMBER,
 			created_at: new Date(),
-		}
+		};
 
-		this.users.push(user)
+		this.users.push(user);
 
-		return user
+		return user;
 	}
 
 	async update(data: UserUpdate) {
-		const { id, name, email, password_hash } = data
+		const { id, name, email, password_hash } = data;
 
-		let user = this.users.find((user) => user.id === id)
+		let user = this.users.find((user) => user.id === id);
 
-		if (!user) return null
+		if (!user) return null;
 
-		user = { ...user, name, email, password_hash }
+		user = { ...user, name, email, password_hash };
 
-		return user
+		return user;
 	}
 }

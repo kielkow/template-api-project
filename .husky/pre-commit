@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+sudo npm run format:eslint
+sudo npm run format:prettier
+sudo npm run build
+sudo npm run test
+sudo npm run test:e2e

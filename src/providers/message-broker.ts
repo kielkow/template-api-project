@@ -1,87 +1,87 @@
-import { env } from '@/env'
-import amqplib, { Connection } from 'amqplib'
+import { env } from "@/env";
+import amqplib, { Connection } from "amqplib";
 
 class MessageProvider {
-	connection: Connection | null
+	connection: Connection | null;
 
 	constructor() {
-		this.connection = null
+		this.connection = null;
 	}
 
 	async connect() {
-		return await amqplib.connect(env.RABBITMQ_URL)
+		return await amqplib.connect(env.RABBITMQ_URL);
 	}
 
 	async publish(queue: string, message: string) {
-		if (!this.connection) this.connection = await this.connect()
+		if (!this.connection) this.connection = await this.connect();
 
-		const channel = await this.connection.createChannel()
+		const channel = await this.connection.createChannel();
 
-		await channel.assertQueue(queue, { durable: true })
+		await channel.assertQueue(queue, { durable: true });
 
-		channel.sendToQueue(queue, Buffer.from(message))
+		channel.sendToQueue(queue, Buffer.from(message));
 
-		await channel.close()
+		await channel.close();
 	}
 
 	async consume(queue: string, method: Function) {
-		if (!this.connection) this.connection = await this.connect()
+		if (!this.connection) this.connection = await this.connect();
 
-		const channel = await this.connection.createChannel()
+		const channel = await this.connection.createChannel();
 
 		const { queue: name, messageCount } = await channel.assertQueue(queue, {
 			durable: true,
-		})
-		console.log('QUEUE INFO:', { name, messageCount })
+		});
+		console.log("QUEUE INFO:", { name, messageCount });
 
 		await channel.consume(
 			queue,
 			async (msg) => {
 				if (msg) {
 					try {
-						method(msg.content.toString())
-						channel.ack(msg)
+						method(msg.content.toString());
+						channel.ack(msg);
 					} catch (error) {
-						channel.reject(msg, false)
+						channel.reject(msg, false);
 					}
 				}
 			},
-			{ noAck: false },
-		)
+			{ noAck: false }
+		);
 
-		await channel.close()
+		await channel.close();
 	}
 
 	async testConn() {
 		try {
-			if (!this.connection) this.connection = await this.connect()
+			if (!this.connection) this.connection = await this.connect();
 
-			const channel = await this.connection.createChannel()
+			const channel = await this.connection.createChannel();
 
-			await channel.assertQueue('test-conn')
+			await channel.assertQueue("test-conn");
 
-			await channel.close()
+			await channel.close();
 
 			console.info({
-				status: 'Test connection with RabbitMQ success.',
+				status: "Test connection with RabbitMQ success.",
 				result: true,
-			})
+			});
 		} catch (error) {
 			console.error({
-				status: 'Test connection with Rabbit fail.',
+				status: "Test connection with Rabbit fail.",
 				error,
-			})
+			});
 
-			throw error
+			throw error;
 		}
 	}
 
 	async disconnect() {
 		if (this.connection) {
-			await this.connection.close()
-			this.connection = null
+			await this.connection.close();
+			this.connection = null;
 		}
 	}
 }
 
-export const messageProvider = new MessageProvider()
+export const messageProvider = new MessageProvider();
