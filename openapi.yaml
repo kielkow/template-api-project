@@ -1,0 +1,94 @@
+openapi: 3.0.3
+info:
+  version: 0.1.0
+  title: Template API Project
+  description: Template of an complete API project
+
+servers:
+  - url: localhost:3000
+    description: Local server
+
+paths:
+  /healthcheck:
+    get:
+      description: Check services status.
+      responses:
+        '200':
+          description: A message to confirm the services status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthcheckData'
+  /users:
+    post:
+      description: Register a new user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestCreateUserData'
+      responses:
+        '201':
+          description: Dados de um ingestor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseCreateUserData'
+components:
+  schemas:
+    HealthcheckData:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Server is up!
+    RequestCreateUserData:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          example: Jonh Doe
+        email:
+          type: string
+          example: jonhdoe@email.com
+        password:
+          type: string
+          example: my_strong_password
+    ResponseCreateUserData:
+      type: object
+      required:
+        - id
+        - name
+        - email
+        - role
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          example: 657559bc-7682-4259-9b76-72c7cb3028ee
+        name:
+          type: string
+          example: Jonh Doe
+        email:
+          type: string
+          example: jonhdoe@email.com
+        role:
+          type: string
+          enum:
+            - MEMBER
+            - ADMIN
+          example: MEMBER
+        created_at:
+          type: string
+          format: date-time
+          example: 2021-01-01T00:00:00.000Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2021-01-01T00:00:00.000Z
