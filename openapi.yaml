@@ -2,26 +2,24 @@ openapi: 3.0.3
 info:
   version: 0.1.0
   title: Template API Project
-  description: Template of an complete API project
-
+  description: Template of complete API project
 servers:
-  - url: localhost:3000
+  - url: 'localhost:3000'
     description: Local server
-
 paths:
   /healthcheck:
     get:
       description: Check services status.
       responses:
         '200':
-          description: A message to confirm the services status.
+          description: Message to confirm the services status.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HealthcheckData'
   /users:
     post:
-      description: Register a new user.
+      description: Register new user.
       requestBody:
         required: true
         content:
@@ -30,11 +28,27 @@ paths:
               $ref: '#/components/schemas/RequestCreateUserData'
       responses:
         '201':
-          description: Dados de um ingestor
+          description: User data.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseCreateUserData'
+  /sessions:
+    post:
+      description: Generate access token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestGenerateTokenData'
+      responses:
+        '200':
+          description: Token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseGenerateTokenData'
 components:
   schemas:
     HealthcheckData:
@@ -92,3 +106,24 @@ components:
           type: string
           format: date-time
           example: 2021-01-01T00:00:00.000Z
+    RequestGenerateTokenData:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: jonhdoe@email.com
+        password:
+          type: string
+          example: my_strong_password
+    ResponseGenerateTokenData:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: >-
+            956yZDcyDmWrMhJKGLNg/3VL12xvWri?17KQLJilg?HXOv8eXe2!rKu4Qf8ExPGpaFn4cHNlLOhHkit?16JZ5uwswaZkxaz4h286O2IFlu?ehDuSoMsK2PzkTVb7QTfESeTPsDat7b1Rt1cbp6T8Sca=K1Fs7nCqEe1VI0GcR1pWtL4kWLVJ6u810Tgp8ndGXFtDA/yVHbD?ZJa-GAVQNOZVOqrn8WkUgxZcdyd89VtxTDAAfREkq8zjn=9waGm!
