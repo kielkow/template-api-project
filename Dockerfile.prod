@@ -1,0 +1,37 @@
+FROM node:20-alpine3.17 AS base
+RUN apk --no-cache add 
+
+ARG USER=node
+ARG DIR=/usr/local/share/app
+
+FROM base AS permissions
+RUN mkdir -p ${DIR}
+RUN chown -R ${USER}:${USER} ${DIR}
+RUN mkdir -p /home/node/.npm && chown -R ${USER}:${USER} /home/node/.npm
+
+FROM permissions AS npminstall
+USER ${USER}
+
+WORKDIR ${DIR}
+COPY --chown=${USER}:${USER} . ./
+COPY --chown=${USER}:${USER} package*.json ./
+RUN npm ci
+
+FROM npminstall AS build
+
+USER ${USER}
+WORKDIR ${DIR}
+
+RUN npm run build
+
+FROM build AS develop
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start:dev"]
+
+FROM build AS current
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start:prod"]
