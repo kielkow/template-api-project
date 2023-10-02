@@ -1,11 +1,14 @@
 openapi: 3.0.3
+
 info:
   version: 0.1.0
   title: Template API Project
   description: Template of complete API project
+
 servers:
   - url: 'localhost:3000'
     description: Local server
+
 paths:
   /healthcheck:
     get:
@@ -16,7 +19,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HealthcheckData'
+                $ref: '#/components/schemas/ResponseHealthcheck'
+
   /users:
     post:
       description: Register new user.
@@ -25,14 +29,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestCreateUserData'
+              $ref: '#/components/schemas/RequestCreateUser'
       responses:
         '201':
           description: User data.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseCreateUserData'
+                $ref: '#/components/schemas/ResponseCreateUser'
+
   /sessions:
     post:
       description: Generate access token.
@@ -41,23 +46,36 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestGenerateTokenData'
+              $ref: '#/components/schemas/RequestGenerateToken'
       responses:
         '200':
           description: Token
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseGenerateTokenData'
+                $ref: '#/components/schemas/ResponseGenerateToken'
+
+  /me:
+    get:
+     description: Get profile info.
+     responses:
+      '200':
+       description: Method to get user profile info.
+       content:
+        application/json:
+         schema:
+          $ref: '#/components/schemas/ResponseGetUserProfile'
+
 components:
   schemas:
-    HealthcheckData:
+    ResponseHealthcheck:
       type: object
       properties:
         message:
           type: string
           example: Server is up!
-    RequestCreateUserData:
+
+    RequestCreateUser:
       type: object
       required:
         - name
@@ -73,7 +91,7 @@ components:
         password:
           type: string
           example: my_strong_password
-    ResponseCreateUserData:
+    ResponseCreateUser:
       type: object
       required:
         - id
@@ -106,7 +124,8 @@ components:
           type: string
           format: date-time
           example: 2021-01-01T00:00:00.000Z
-    RequestGenerateTokenData:
+
+    RequestGenerateToken:
       type: object
       required:
         - email
@@ -118,7 +137,7 @@ components:
         password:
           type: string
           example: my_strong_password
-    ResponseGenerateTokenData:
+    ResponseGenerateToken:
       type: object
       required:
         - token
@@ -127,3 +146,30 @@ components:
           type: string
           example: >-
             956yZDcyDmWrMhJKGLNg/3VL12xvWri?17KQLJilg?HXOv8eXe2!rKu4Qf8ExPGpaFn4cHNlLOhHkit?16JZ5uwswaZkxaz4h286O2IFlu?ehDuSoMsK2PzkTVb7QTfESeTPsDat7b1Rt1cbp6T8Sca=K1Fs7nCqEe1VI0GcR1pWtL4kWLVJ6u810Tgp8ndGXFtDA/yVHbD?ZJa-GAVQNOZVOqrn8WkUgxZcdyd89VtxTDAAfREkq8zjn=9waGm!
+
+    ResponseGetUserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 657559bc-7682-4259-9b76-72c7cb3028ee
+        name:
+          type: string
+          example: Jonh Doe
+        email:
+          type: string
+          example: jonhdoe@email.com
+        role:
+          type: string
+          enum:
+            - MEMBER
+            - ADMIN
+          example: MEMBER
+        created_at:
+          type: string
+          format: date-time
+          example: 2021-01-01T00:00:00.000Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2021-01-01T00:00:00.000Z
