@@ -55,6 +55,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/ResponseGenerateToken'
 
+  /token/refresh:
+    post:
+      description: Generate refresh token.
+      # parameters:
+      #   - name: refreshToken
+      #     in: cookie
+      #     description: Refresh token value.
+      #     required: true
+      #     schema:
+      #       type: string
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseGenerateToken'
+
   /me:
     get:
      description: Get profile info.
@@ -96,6 +116,10 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: refreshToken
 
   schemas:
     ResponseHealthcheck:
@@ -220,6 +244,3 @@ components:
         password:
           type: string
           example: my_strong_password
-
-security:
-  - bearerAuth: []
