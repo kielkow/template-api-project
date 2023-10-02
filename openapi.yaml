@@ -58,6 +58,8 @@ paths:
   /me:
     get:
      description: Get profile info.
+     security:
+       - bearerAuth: []
      responses:
       '200':
        description: Method to get user profile info.
@@ -69,6 +71,8 @@ paths:
   /users/{id}:
     put:
       description: Update user data.
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -87,6 +91,12 @@ paths:
           description: User updated. No content.
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     ResponseHealthcheck:
       type: object
@@ -210,3 +220,6 @@ components:
         password:
           type: string
           example: my_strong_password
+
+security:
+  - bearerAuth: []
