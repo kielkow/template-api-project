@@ -66,6 +66,26 @@ paths:
          schema:
           $ref: '#/components/schemas/ResponseGetUserProfile'
 
+  /users/{id}:
+    put:
+      description: Update user data.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user to get
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUpdateUser'
+      responses:
+        '204':
+          description: User updated. No content.
+
 components:
   schemas:
     ResponseHealthcheck:
@@ -173,3 +193,20 @@ components:
           type: string
           format: date-time
           example: 2021-01-01T00:00:00.000Z
+
+    RequestUpdateUser:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          example: Jonh Doe
+        email:
+          type: string
+          example: jonhdoe@email.com
+        password:
+          type: string
+          example: my_strong_password
