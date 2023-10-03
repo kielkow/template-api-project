@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify'
+import fastifyMulter from 'fastify-multer'
 
 import { register } from './register/register'
 import { authenticate } from './authenticate/authenticate'
@@ -10,7 +11,11 @@ import { publishMessage } from './publish-message/publish-message'
 
 import { verifyJWT } from '../../middlewares/verify-jwt'
 
+const upload = fastifyMulter({ dest: 'uploads/' })
+
 export async function usersRoutes(app: FastifyInstance) {
+	app.register(fastifyMulter.contentParser)
+
 	// Not Authenticated
 	app.post('/users', register)
 	app.post('/sessions', authenticate)
@@ -29,4 +34,13 @@ export async function usersRoutes(app: FastifyInstance) {
 	)
 
 	app.put('/users/:id', { onRequest: [verifyJWT] }, update)
+
+	app.post(
+		'/users/upload',
+		{ preHandler: upload.single('file') },
+		async (request, reply) => {
+			console.log(request.file)
+			reply.send({ message: 'File uploaded successfully' })
+		},
+	)
 }
