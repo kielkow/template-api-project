@@ -1,5 +1,6 @@
 import fastify from 'fastify'
 import { ZodError } from 'zod'
+import mercurius from 'mercurius'
 import fastifyJwt from '@fastify/jwt'
 import fastifyCookie from '@fastify/cookie'
 import fastifyCors from '@fastify/cors'
@@ -10,6 +11,10 @@ import { env } from './env'
 
 import { usersRoutes } from './http/controllers/users/routes'
 import { healthcheckRoutes } from './http/controllers/healthcheck/routes'
+
+import { schema } from './graphql/schema'
+import { resolvers } from './graphql/resolver'
+import { graphQLRoutes } from './graphql/routes'
 
 export const app = fastify()
 
@@ -31,8 +36,14 @@ app.register(fastifyCors, {
 	credentials: true,
 })
 
+app.register(mercurius, {
+	schema,
+	resolvers,
+})
+
 app.register(usersRoutes)
 app.register(healthcheckRoutes)
+app.register(graphQLRoutes)
 
 if (env.NODE_ENV === 'prod') {
 	Sentry.init({
