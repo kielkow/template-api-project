@@ -110,6 +110,29 @@ paths:
         '204':
           description: User updated. No content.
 
+  /users/upload:
+    post:
+      summary: Upload a file to register users.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Result of upload file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUploadUsers'
+        '400':
+          description: File not found.
+
 components:
   securitySchemes:
     bearerAuth:
@@ -244,3 +267,31 @@ components:
         password:
           type: string
           example: my_strong_password
+
+    ResponseUploadUsers:
+      type: object
+      properties:
+        success:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              email:
+                type: string
+          example: [
+            {
+              "id": "195717c7-2b19-43aa-a8c3-dd8640ba9ab5",
+              "name": "Jonh Doe",
+              "email": "jonhdoe@example.com"
+            }
+          ]
+        failure:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          example: []
