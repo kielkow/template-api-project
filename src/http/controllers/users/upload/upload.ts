@@ -7,6 +7,11 @@ import { convertCsvToJson } from '@/utils/convert-csv-to-json'
 import { FileNotFoundError } from '@/use-case/errors/files-not-found-exists'
 import { makeRegisterUsecase } from '@/use-case/factories/users/make-register-usecase'
 
+interface ResponseUploadUsers {
+	success: any[]
+	failure: any[]
+}
+
 export async function upload(request: FastifyRequest, reply: FastifyReply) {
 	try {
 		if (!request.file || !request.file.path) throw new FileNotFoundError()
@@ -17,7 +22,7 @@ export async function upload(request: FastifyRequest, reply: FastifyReply) {
 
 		const registerUseCase = makeRegisterUsecase()
 
-		const results: any = {
+		const results: ResponseUploadUsers = {
 			success: [],
 			failure: [],
 		}
@@ -31,9 +36,13 @@ export async function upload(request: FastifyRequest, reply: FastifyReply) {
 
 				const { name, email, password } = registerBodySchema.parse(data)
 
-				await registerUseCase.execute({ name, email, password })
+				const { user } = await registerUseCase.execute({
+					name,
+					email,
+					password,
+				})
 
-				results.success.push(data)
+				results.success.push({ id: user.id, name, email })
 			} catch (error) {
 				results.failure.push(error)
 			}
