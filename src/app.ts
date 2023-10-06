@@ -13,7 +13,7 @@ import { usersRoutes } from './http/controllers/users/routes'
 import { healthcheckRoutes } from './http/controllers/healthcheck/routes'
 
 import { schema } from './graphql/schema'
-import { resolvers } from './graphql/resolver'
+import { resolvers } from './graphql/resolvers'
 import { graphQLRoutes } from './graphql/routes'
 
 export const app = fastify()

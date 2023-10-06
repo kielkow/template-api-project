@@ -1,25 +1,16 @@
-import { graphql } from 'graphql'
-import { FastifyInstance } from 'fastify'
-
-import { schema } from './schema'
-import { resolvers } from './resolver'
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 
 interface GraphQLRequestBody {
 	query: string
-	variables?: Record<string, any>
 }
 
 export async function graphQLRoutes(app: FastifyInstance) {
-	app.post('/graphql', async (req, reply) => {
-		const { query, variables } = req.body as GraphQLRequestBody
+	app.post(
+		'/query/graphql',
+		async (request: FastifyRequest, reply: FastifyReply) => {
+			const { query } = request.body as GraphQLRequestBody
 
-		const result = await graphql({
-			schema,
-			source: query,
-			rootValue: resolvers,
-			variableValues: variables,
-		})
-
-		reply.send(result)
-	})
+			return reply.graphql(query)
+		},
+	)
 }
