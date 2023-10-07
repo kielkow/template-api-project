@@ -1,6 +1,15 @@
 const schema = `
+  type User {
+    id: ID!
+    name: String!
+    email: String!
+		password: String!
+		role: String!
+  }
+
   type Query {
-    add(x: Int, y: Int): Int
+    users: [User!]!
+    user(id: ID!): User
   }
 `
 

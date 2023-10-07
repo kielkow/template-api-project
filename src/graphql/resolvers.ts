@@ -1,11 +1,15 @@
-interface Sum {
-	x: number
-	y: number
-}
+import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'
+
+const prismaUsersRepository = new PrismaUsersRepository()
 
 const resolvers = {
 	Query: {
-		add: async (_: any, { x, y }: Sum) => x + y,
+		users: async () => {
+			return await prismaUsersRepository.list()
+		},
+		user: async (_: any, { id }: { id: string }) => {
+			return await prismaUsersRepository.findById(id)
+		},
 	},
 }
 
