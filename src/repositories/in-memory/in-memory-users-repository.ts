@@ -6,6 +6,10 @@ import { UserUpdate, UsersRepository } from '../users-repository'
 export class InMemoryUsersRepository implements UsersRepository {
 	public users: User[] = []
 
+	async list() {
+		return this.users
+	}
+
 	async findById(id: string) {
 		const user = this.users.find((user) => user.id === id)
 

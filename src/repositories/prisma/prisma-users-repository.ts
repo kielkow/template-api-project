@@ -6,6 +6,12 @@ import { cacheProvider } from '@/providers/cache'
 import { UserUpdate, UsersRepository } from '../users-repository'
 
 export class PrismaUsersRepository implements UsersRepository {
+	async list() {
+		const users = await prisma.user.findMany()
+
+		return users
+	}
+
 	async findById(id: string) {
 		let user
 
