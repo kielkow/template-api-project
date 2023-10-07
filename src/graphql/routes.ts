@@ -5,12 +5,9 @@ interface GraphQLRequestBody {
 }
 
 export async function graphQLRoutes(app: FastifyInstance) {
-	app.post(
-		'/query/graphql',
-		async (request: FastifyRequest, reply: FastifyReply) => {
-			const { query } = request.body as GraphQLRequestBody
+	app.post('/', async (request: FastifyRequest, reply: FastifyReply) => {
+		const { query } = request.body as GraphQLRequestBody
 
-			return reply.graphql(query)
-		},
-	)
+		return reply.graphql(query)
+	})
 }
