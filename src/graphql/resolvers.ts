@@ -1,5 +1,6 @@
 import { hash } from 'bcryptjs'
 
+import { UserAlreadyExistsError } from '@/use-case/errors/user-already-exists-error'
 import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'
 
 const prismaUsersRepository = new PrismaUsersRepository()
@@ -22,12 +23,14 @@ const resolvers = {
 				password,
 			}: { name: string; email: string; password: string },
 		) => {
-			const password_hash = await hash(password, 6)
+			const userExists = await prismaUsersRepository.findByEmail(email)
+
+			if (userExists) throw new UserAlreadyExistsError()
 
 			const { id } = await prismaUsersRepository.create({
 				name,
 				email,
-				password_hash,
+				password_hash: await hash(password, 6),
 			})
 
 			return { id }
