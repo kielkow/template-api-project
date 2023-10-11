@@ -6,4 +6,4 @@ app
 		host: env.HOST,
 		port: env.PORT,
 	})
-	.then(() => console.log(`HTTP Server Running on port ${env.PORT}!`))
+	.then(() => console.log(`HTTP Server Running on port ${env.PORT}`))
