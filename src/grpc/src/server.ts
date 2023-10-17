@@ -19,8 +19,8 @@ const greet = (
 	const response = new GreetResponse()
 
 	switch (call.request.getLanguageCode()) {
-		case Language.Code.CODE_FA:
-			response.setGreeting(`سلام، ${call.request.getName()}`)
+		case Language.Code.CODE_PT_BR:
+			response.setGreeting(`Olá, ${call.request.getName()}`)
 			break
 		case Language.Code.CODE_UNSPECIFIED:
 		case Language.Code.CODE_EN:
