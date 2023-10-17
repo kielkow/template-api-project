@@ -11,6 +11,7 @@ export default defineConfig({
 		'!src/**/*.yaml.*',
 		'!src/**/*.proto.*',
 	],
+	outDir: 'build',
 	loader: {
 		'.proto': 'text',
 		'.yaml': 'text',
