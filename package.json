@@ -13,15 +13,22 @@
     "test:create-prisma-environment": "npm link ./prisma/vitest-environment-prisma",
     "test:install-prisma-environment": "npm link vitest-environment-prisma",
     "pretest:e2e": "run-s test:create-prisma-environment test:install-prisma-environment",
+
     "prebuild": "rimraf build",
     "build": "tsup src --out-dir build",
+
     "format:eslint": "eslint --fix \"src/**/*.ts\"",
     "format:prettier": "prettier --write \"src/**/*.ts\"",
+
     "start:prod": "node build/server.js",
     "start:dev": "tsx watch src/server.ts",
     "start:migrate:prod": "prisma migrate deploy && npm run start:prod",
+
     "check-app": "npm run format:eslint && npm run build && npm run test:coverage",
-    "prepare": "husky install"
+    "prepare": "husky install",
+
+		"start:grpc:server": "cd src/grpc/proto && buf generate && cd .. && tsx src/server.ts",
+		"start:grpc:client": "cd src/grpc/proto && buf generate && cd .. && tsx src/client.ts"
   },
   "keywords": [],
   "author": "",
