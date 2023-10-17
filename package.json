@@ -15,7 +15,7 @@
     "pretest:e2e": "run-s test:create-prisma-environment test:install-prisma-environment",
 
     "prebuild": "rimraf build",
-    "build": "tsup src --out-dir build",
+    "build": "tsup --out-dir build",
 
     "format:eslint": "eslint --fix \"src/**/*.ts\"",
     "format:prettier": "prettier --write \"src/**/*.ts\"",
