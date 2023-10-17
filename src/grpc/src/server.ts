@@ -5,12 +5,12 @@ import {
 	ServerCredentials,
 } from '@grpc/grpc-js'
 
-import { Language } from '../proto/language/v1/language_pb'
 import {
 	GreetRequest,
 	GreetResponse,
-} from '../proto/services/hello/v1/hello_service_pb'
-import { HelloServiceService } from '../proto/services/hello/v1/hello_service_grpc_pb'
+} from '../proto/service/v1/hello_service_pb'
+import { Language } from '../proto/language/v1/language_pb'
+import { HelloServiceService } from '../proto/service/v1/hello_service_grpc_pb'
 
 const greet = (
 	call: ServerUnaryCall<GreetRequest, GreetResponse>,
