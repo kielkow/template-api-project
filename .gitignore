@@ -3,3 +3,4 @@ build
 uploads
 coverage
 node_modules
+src/grpc/src/proto
