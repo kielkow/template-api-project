@@ -14,7 +14,7 @@ const request = new GreetRequest()
 request.setName('Aria')
 request.setLanguageCode(Language.Code.CODE_EN)
 
-client.greet(request, (error, response) => {
+client.greet(request, (error: any, response: any) => {
 	if (error) {
 		console.error(error)
 
