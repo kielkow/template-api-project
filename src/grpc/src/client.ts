@@ -13,15 +13,16 @@ const client = new CreateUserClient(
 
 const request = new CreateUserRequest()
 
+// TODO: Get vars from gRPC request
 request.setName('John Doe')
-request.setEmail('jonhdoe@email.com')
-request.setPassword('123456')
+request.setEmail('johndoe@example.com')
+request.setPassword('password123')
 
 client.createUser(request, (error: any, response: CreateUserResponse) => {
 	if (error) {
-		console.error('Error to process createUser request:', error)
+		console.error('Client - Error to process createUser request:', error)
 		process.exit(1)
 	}
 
-	console.info(`User ID: ${response.getId()}`)
+	console.info(`Created User ID: ${response.getId()}`)
 })
