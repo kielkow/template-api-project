@@ -1,5 +1,8 @@
-import 'dotenv/config'
+import dotenv from 'dotenv'
+import path from 'path'
 import { z } from 'zod'
+
+dotenv.config({ path: path.join(__dirname, '../../.env') })
 
 const envSchema = z.object({
 	JWT_SECRET: z.string().default('templateapiproject'),
