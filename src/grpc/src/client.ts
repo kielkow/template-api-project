@@ -1,25 +1,27 @@
 import { credentials } from '@grpc/grpc-js'
 
-import { Language } from './proto/language/v1/language_pb'
-import { GreetRequest } from './proto/service/v1/hello_service_pb'
-import { HelloServiceClient } from './proto/service/v1/hello_service_grpc_pb'
+import {
+	CreateUserRequest,
+	CreateUserResponse,
+} from './proto/service/v1/create_user_pb'
+import { CreateUserClient } from './proto/service/v1/create_user_grpc_pb'
 
-const client = new HelloServiceClient(
+const client = new CreateUserClient(
 	'localhost:4000',
 	credentials.createInsecure(),
 )
 
-const request = new GreetRequest()
+const request = new CreateUserRequest()
 
-request.setName('Aria')
-request.setLanguageCode(Language.Code.CODE_EN)
+request.setName('John Doe')
+request.setEmail('jonhdoe@email.com')
+request.setPassword('123456')
 
-client.greet(request, (error: any, response: any) => {
+client.createUser(request, (error: any, response: CreateUserResponse) => {
 	if (error) {
-		console.error(error)
-
+		console.error('Error to process createUser request:', error)
 		process.exit(1)
 	}
 
-	console.info(response.getGreeting())
+	console.info(`User ID: ${response.getId()}`)
 })

@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto'
 import {
 	ServerUnaryCall,
 	sendUnaryData,
@@ -5,35 +6,33 @@ import {
 	ServerCredentials,
 } from '@grpc/grpc-js'
 
+// Import proto definition and service
 import {
-	GreetRequest,
-	GreetResponse,
-} from './proto/service/v1/hello_service_pb'
-import { Language } from './proto/language/v1/language_pb'
-import { HelloServiceService } from './proto/service/v1/hello_service_grpc_pb'
+	CreateUserRequest,
+	CreateUserResponse,
+} from './proto/service/v1/create_user_pb'
+import { CreateUserService } from './proto/service/v1/create_user_grpc_pb'
 
-const greet = (
-	call: ServerUnaryCall<GreetRequest, GreetResponse>,
-	callback: sendUnaryData<GreetResponse>,
+// Declare function signature for the createUser method
+const createUser = (
+	call: ServerUnaryCall<CreateUserRequest, CreateUserResponse>,
+	callback: sendUnaryData<CreateUserResponse>,
 ) => {
-	const response = new GreetResponse()
+	const response = new CreateUserResponse()
 
-	switch (call.request.getLanguageCode()) {
-		case Language.Code.CODE_PT_BR:
-			response.setGreeting(`Olá, ${call.request.getName()}`)
-			break
-		case Language.Code.CODE_UNSPECIFIED:
-		case Language.Code.CODE_EN:
-		default:
-			response.setGreeting(`Hello, ${call.request.getName()}`)
-	}
+	console.log(`Request name: ${call.request.getName()}`)
+	console.log(`Request email: ${call.request.getEmail()}`)
+	console.log(`Request password: ${call.request.getPassword()}`)
+
+	response.setId(randomUUID())
 
 	callback(null, response)
 }
 
+// Start gRPC server and expose the proto definition and service
 const server = new Server()
 
-server.addService(HelloServiceService, { greet })
+server.addService(CreateUserService, { createUser })
 
 server.bindAsync('0.0.0.0:4000', ServerCredentials.createInsecure(), () => {
 	server.start()
