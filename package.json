@@ -27,6 +27,8 @@
     "check-app": "npm run format:eslint && npm run build && npm run test:coverage",
     "prepare": "husky install",
 
+		"check:grpc:files": "cd src/grpc/proto && buf ls-files && buf lint && echo \"Files are ok!\"",
+		"generate:grpc:buf": "rimraf src/grpc/src/proto && cd src/grpc/proto && buf generate && echo \"Files generated!\"",
 		"start:grpc:server": "cd src/grpc/proto && buf generate && cd .. && tsx src/server.ts",
 		"start:grpc:client": "cd src/grpc/proto && buf generate && cd .. && tsx src/client.ts"
   },
